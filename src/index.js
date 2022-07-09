@@ -1,8 +1,19 @@
+// Packages
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+
+// Components
 import App from './App';
+
+// Utils
 import reportWebVitals from './reportWebVitals';
+
+// Styles
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
