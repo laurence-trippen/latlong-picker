@@ -25,7 +25,7 @@ function MapPage() {
               A pretty CSS3 popup. <br /> Easily customizable.
             </Popup>
           </Marker>
-          <MapLocation ref={mapLocationRef} />
+          <MapLocation ref={mapLocationRef} zoom={10} />
         </MapContainer>
       </Box>
     </Box>
