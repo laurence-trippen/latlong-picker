@@ -3,8 +3,10 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { Box } from '@mui/system';
 import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
+import { useStore } from '../store/store';
 
 function MapPage() {
+  const selectedMode = useStore((state) => state.selectedMode);
   const mapLocationRef = useRef(); 
 
   function handleMyLocation() {

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import { AppBar, Button, IconButton, ToggleButton, ToggleButtonGroup, Toolbar, Typography } from '@mui/material';
 import { blueGrey } from '@mui/material/colors';
-
-const DRAG_MODE = "drag";
-const ADD_MODE = "add";
+import { ADD_MODE, DRAG_MODE } from '../core/modes';
+import { useStore } from '../store/store';
 
 function Header({ onMyLocation }) {
-  const [mode, setMode] = useState(DRAG_MODE);
+  const selectedMode = useStore((state) => state.selectedMode);
+  const setMode = useStore((state) => state.setMode);
 
   const handleOnChangeMode = (e, newMode) => setMode(newMode);
 
@@ -29,7 +29,7 @@ function Header({ onMyLocation }) {
           LatLong Picker
         </Typography>
         <ToggleButtonGroup 
-          value={mode} 
+          value={selectedMode} 
           size="small" 
           exclusive 
           onChange={handleOnChangeMode}
