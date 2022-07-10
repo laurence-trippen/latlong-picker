@@ -1,32 +1,26 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { Box } from '@mui/system';
 import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
 import { useStore } from '../store/store';
 import MapEvents from '../components/MapEvents';
-import { Divider, Drawer, IconButton, ListItem, ListItemIcon, ListItemText, useTheme } from '@mui/material';
+import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 function MapPage() {
   // State
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [mockPos, setMockPos] = useState([
-    { lat: 5, long: 2 },
-    { lat: 5, long: 2 },
-    { lat: 5, long: 2 },
-  ]);
-
-  // Hooks
-  const theme = useTheme();
-  console.log('Theme: ', theme);
 
   // Store
   const markerPositions = useStore((state) => state.markerPositions);
   const removeMarker = useStore((state) => state.removeMarker);
+  const updateMarker = useStore((state) => state.updateMarker);
+
+  console.log('Pos: ', markerPositions);
 
   // Refs
   const mapLocationRef = useRef();
@@ -39,6 +33,30 @@ function MapPage() {
   function handleToggleDrawer() {
     setDrawerOpen(state => !state);
   }
+
+  const markerEventHandlers = useMemo(() => ({
+    click(e) {
+      console.log('Click: ', e.target.getLatLng());
+    },
+    dragstart(e) {
+      console.log('Dragstart: ', e);
+    },
+    drag(e) {
+      console.log('Drag: ', e);
+    },
+    dragend(e) {
+      console.log('Dragend: ', e);
+    },
+    movestart(e) {
+      console.log('Movestart: ', e);
+    },
+    move(e) {
+      console.log('Move: ', e);
+    },
+    moveend(e) {
+      console.log('Moveend: ', e);
+    },
+  }), []);
 
   return (
     <>
@@ -55,7 +73,6 @@ function MapPage() {
                 height: "100%", 
                 flexGrow: 1,
               }}
-              className={drawerOpen}
               center={[51.505, -0.09]} 
               zoom={13} 
               scrollWheelZoom={true}
@@ -64,14 +81,9 @@ function MapPage() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Marker position={[51.505, -0.09]}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
 
               {markerPositions.map((position, id) => (
-                <Marker key={`marker-${id}`} position={position} draggable={true}>
+                <Marker key={`marker-${id}`} position={position} draggable={true} eventHandlers={markerEventHandlers}>
                   <Popup>
                     <IconButton size='small' onClick={() => removeMarker(position)}>
                       <DeleteIcon />
@@ -100,16 +112,18 @@ function MapPage() {
                 },
               }}
             >
-              {mockPos.map((pos, id) => (
-                <>
-                  <ListItem key={id}>
-                    <ListItemIcon>
-                      <LocationOnIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={`${pos.lat} ${pos.long}`} />
+              {markerPositions.map((pos, id) => (
+                <React.Fragment key={id}>
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <LocationOnIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={`${pos.lat} ${pos.lng}`} />
+                    </ListItemButton>
                   </ListItem>
                   <Divider />
-                </>
+                </React.Fragment>
               ))}
             </Drawer>
           </Box>
