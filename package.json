@@ -16,7 +16,9 @@
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.0.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.0.0-rc.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "simple-zustand-devtools": "^1.1.0"
   }
 }
