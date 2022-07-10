@@ -35,6 +35,10 @@ function MapPage() {
   }
 
   const markerEventHandlers = useMemo(() => ({
+    /*
+    mousedown(e) {
+      console.log('Mouse Down', e.sourceTarget.options.alt);
+    },
     click(e) {
       console.log('Click: ', e.target.getLatLng());
     },
@@ -53,8 +57,16 @@ function MapPage() {
     move(e) {
       console.log('Move: ', e);
     },
+    */
     moveend(e) {
-      console.log('Moveend: ', e);
+      const uuid = e.sourceTarget.options.alt;
+      const { lat, lng } = e.target.getLatLng();
+
+      updateMarker({
+        uuid,
+        lat,
+        lng,
+      });
     },
   }), []);
 
@@ -82,8 +94,14 @@ function MapPage() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
 
-              {markerPositions.map((position, id) => (
-                <Marker key={`marker-${id}`} position={position} draggable={true} eventHandlers={markerEventHandlers}>
+              {markerPositions.map((position) => (
+                <Marker 
+                  key={position.uuid} 
+                  position={position} 
+                  draggable={true} 
+                  eventHandlers={markerEventHandlers} 
+                  alt={position.uuid}
+                >
                   <Popup>
                     <IconButton size='small' onClick={() => removeMarker(position)}>
                       <DeleteIcon />
