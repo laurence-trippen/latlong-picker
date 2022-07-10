@@ -22,7 +22,6 @@ export const useStore = create((set) => ({
   updateMarker: (updatedPosition) => set((state) => {
     return ({
       markerPositions: state.markerPositions.map((pos) => {
-  
         if (pos.uuid !== updatedPosition.uuid) {
           // This isn't the item we care about - keep it as-is
           return pos;
@@ -33,8 +32,6 @@ export const useStore = create((set) => ({
           ...pos,
           ...updatedPosition,
         };
-  
-        console.log(updated);
   
         return updated;
       })
