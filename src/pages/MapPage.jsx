@@ -5,10 +5,13 @@ import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
 import { useStore } from '../store/store';
 import MapEvents from '../components/MapEvents';
+import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function MapPage() {
   // Store
   const markerPositions = useStore((state) => state.markerPositions);
+  const removeMarker = useStore((state) => state.removeMarker);
 
   // Refs
   const mapLocationRef = useRef();
@@ -39,7 +42,13 @@ function MapPage() {
           </Marker>
 
           {markerPositions.map((position, id) => (
-            <Marker key={id} position={position} />
+            <Marker key={`marker-${id}`} position={position} draggable={true}>
+              <Popup>
+                <IconButton size='small' onClick={() => removeMarker(position)}>
+                  <DeleteIcon />
+                </IconButton>
+              </Popup>
+            </Marker>
           ))}
 
           <MapLocation ref={mapLocationRef} zoom={10} />

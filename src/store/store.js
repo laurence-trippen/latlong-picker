@@ -6,4 +6,5 @@ export const useStore = create((set) => ({
   markerPositions: [],
   setMode: (newMode) => set(({ selectedMode: newMode })),
   addMarker: (newMarker) => set((state) => ({ markerPositions: [...state.markerPositions, newMarker] })),
+  removeMarker: (position) => set((state) => ({ markerPositions: state.markerPositions.filter(pos => JSON.stringify(pos) !== JSON.stringify(position)) })),
 }));
