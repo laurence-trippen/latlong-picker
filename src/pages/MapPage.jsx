@@ -5,7 +5,7 @@ import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
 import { useStore } from '../store/store';
 import MapEvents from '../components/MapEvents';
-import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
@@ -130,7 +130,17 @@ function MapPage() {
                 },
               }}
             >
-              {markerPositions.map((pos, id) => (
+              {markerPositions.length === 0 
+                ? <Box sx={{ 
+                      display: "flex", 
+                      justifyContent: "center", 
+                      alignItems: "center",
+                      height: "100%"
+                    }}
+                  >
+                    <Typography>No Markers placed</Typography>
+                  </Box>
+                : markerPositions.map((pos, id) => (
                 <React.Fragment key={id}>
                   <ListItem disablePadding>
                     <ListItemButton>
