@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MapListItem from '../components/MapListItem';
+import MapFlyTo from '../components/MapFlyTo';
 
 const drawerWidth = 360;
 
@@ -30,6 +31,7 @@ function MapPage() {
 
   // Refs
   const mapLocationRef = useRef();
+  const mapFlyToRef = useRef();
 
   // Events
   function handleMyLocation() {
@@ -134,6 +136,7 @@ function MapPage() {
               ))}
 
               <MapLocation ref={mapLocationRef} zoom={10} />
+              <MapFlyTo ref={mapFlyToRef} />
               <MapEvents />
             </MapContainer>
             <Drawer
@@ -165,7 +168,12 @@ function MapPage() {
                   </Box>
                 : markerPositions.map((pos) => (
                 <React.Fragment key={pos.uuid}>
-                  <MapListItem position={pos} onCopy={handleClipboard} onDelete={removeMarker} />
+                  <MapListItem 
+                    position={pos}
+                    onCopy={handleClipboard}
+                    onDelete={removeMarker}
+                    onClick={() => mapFlyToRef.current.flyToPosition(pos, 13)}
+                  />
                 </React.Fragment>
               ))}
             </Drawer>
