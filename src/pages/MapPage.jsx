@@ -5,15 +5,17 @@ import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
 import { useStore } from '../store/store';
 import MapEvents from '../components/MapEvents';
-import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText, Snackbar, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-const drawerWidth = 280;
+const drawerWidth = 320;
 
 function MapPage() {
   // State
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '' });
 
   // Store
   const markerPositions = useStore((state) => state.markerPositions);
@@ -32,6 +34,23 @@ function MapPage() {
 
   function handleToggleDrawer() {
     setDrawerOpen(state => !state);
+  }
+
+  function handleClipboard(lat, long) {
+    // TODO: In Settings Page Option for changing template.
+    navigator.clipboard.writeText(`${lat}, ${long}`);
+
+    setSnackbar({
+      open: true,
+      message: 'Copied to clipboard.',
+    });
+  }
+
+  function handleSnackbarAutoClose() {
+    setSnackbar({ 
+      open: false,
+      message: '',
+    });
   }
 
   const markerEventHandlers = useMemo(() => ({
@@ -140,14 +159,17 @@ function MapPage() {
                   >
                     <Typography>No Markers placed</Typography>
                   </Box>
-                : markerPositions.map((pos, id) => (
-                <React.Fragment key={id}>
+                : markerPositions.map((pos) => (
+                <React.Fragment key={pos.uuid}>
                   <ListItem disablePadding>
                     <ListItemButton>
                       <ListItemIcon>
                         <LocationOnIcon />
                       </ListItemIcon>
                       <ListItemText primary={`${pos.lat} ${pos.lng}`} />
+                      <IconButton color="primary" onClick={() => handleClipboard(pos.lat, pos.lng)}>
+                        <ContentCopyIcon />
+                      </IconButton>
                     </ListItemButton>
                   </ListItem>
                   <Divider />
@@ -157,6 +179,16 @@ function MapPage() {
           </Box>
         </Box>
       </Box>
+      <Snackbar 
+        open={snackbar.open}
+        message={snackbar.message}
+        onClose={handleSnackbarAutoClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        autoHideDuration={1000}
+      />
     </>
   );
 }
