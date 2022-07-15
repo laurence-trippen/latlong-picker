@@ -26,6 +26,8 @@ function MapPage() {
   const markerPositions = useStore((state) => state.markerPositions);
   const removeMarker = useStore((state) => state.removeMarker);
   const updateMarker = useStore((state) => state.updateMarker);
+  const selectedMarker = useStore((state) => state.selectedMarker);
+  const setSelectedMarker = useStore((state) => state.setSelectedMarker);
 
   console.log('Pos: ', markerPositions);
 
@@ -64,9 +66,6 @@ function MapPage() {
     mousedown(e) {
       console.log('Mouse Down', e.sourceTarget.options.alt);
     },
-    click(e) {
-      console.log('Click: ', e.target.getLatLng());
-    },
     dragstart(e) {
       console.log('Dragstart: ', e);
     },
@@ -83,6 +82,13 @@ function MapPage() {
       console.log('Move: ', e);
     },
     */
+    click(e) {
+      // const latLng = e.target.getLatLng();
+      // console.log('Click: ', latLng);
+
+      const uuid = e.sourceTarget.options.alt;
+      setSelectedMarker(uuid);
+    },
     moveend(e) {
       const uuid = e.sourceTarget.options.alt;
       const { lat, lng } = e.target.getLatLng();
@@ -173,6 +179,7 @@ function MapPage() {
                     onCopy={handleClipboard}
                     onDelete={removeMarker}
                     onClick={() => mapFlyToRef.current.flyToPosition(pos, 13)}
+                    selected={selectedMarker && selectedMarker === pos.uuid ? true : false}
                   />
                 </React.Fragment>
               ))}

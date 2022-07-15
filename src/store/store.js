@@ -5,8 +5,10 @@ import { mountStoreDevtool } from "simple-zustand-devtools";
 
 export const useStore = create((set) => ({
   selectedMode: DRAG_MODE,
+  selectedMarker: null,
   markerPositions: [],
   setMode: (newMode) => set(({ selectedMode: newMode })),
+  setSelectedMarker: (marker) => set({ selectedMarker: marker }),
   addMarker: (newMarker) => set((state) => ({
     markerPositions: [
       ...state.markerPositions, 
@@ -14,10 +16,12 @@ export const useStore = create((set) => ({
         ...newMarker,
         uuid: uuidv4(),
       }
-    ] 
+    ],
+    selectedMarker: null,
   })),
   removeMarker: (position) => set((state) => ({ 
-    markerPositions: state.markerPositions.filter(pos => pos.uuid !== position.uuid) 
+    markerPositions: state.markerPositions.filter(pos => pos.uuid !== position.uuid),
+    selectedMarker: null,
   })),
   updateMarker: (updatedPosition) => set((state) => {
     return ({
@@ -34,10 +38,11 @@ export const useStore = create((set) => ({
         };
   
         return updated;
-      })
+      }),
+      selectedMarker: updatedPosition.uuid,
     });
   }),
 }));
 
-// TODO: Only on dev-mode
+// TODO: Only in dev-mode
 mountStoreDevtool('Store', useStore);

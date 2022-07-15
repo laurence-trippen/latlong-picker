@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { 
   Divider, 
@@ -12,11 +12,22 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import TouchRipple from '@mui/material/ButtonBase/TouchRipple';
+import { triggerRipple } from '../utils/rippleUtils';
 
-function MapListItem({ position, onCopy, onDelete, onClick }) {
+function MapListItem({ position, onCopy, onDelete, onClick, selected = false }) {
+  const containerRef = useRef();
+  const touchRippleRef = useRef();
+  
+  useEffect(() => {
+    if (selected === true) {
+      triggerRipple(containerRef, touchRippleRef);
+    }
+  });
+
   return (
     <>
-      <ListItem disablePadding>
+      <ListItem disablePadding ref={containerRef}>
         <ListItemButton onClick={onClick}>
           <ListItemIcon>
             <LocationOnIcon />
@@ -35,6 +46,7 @@ function MapListItem({ position, onCopy, onDelete, onClick }) {
             <DeleteOutlineIcon />
           </IconButton>
         </ListItemButton>
+        <TouchRipple ref={touchRippleRef} />
       </ListItem>
       <Divider />
     </>
