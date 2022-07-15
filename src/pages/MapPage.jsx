@@ -5,12 +5,23 @@ import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
 import { useStore } from '../store/store';
 import MapEvents from '../components/MapEvents';
-import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText, Snackbar, Typography } from '@mui/material';
+import { 
+  Divider, 
+  Drawer, 
+  IconButton, 
+  ListItem, 
+  ListItemButton, 
+  ListItemIcon, 
+  ListItemText, 
+  Snackbar, 
+  Typography 
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-const drawerWidth = 320;
+const drawerWidth = 360;
 
 function MapPage() {
   // State
@@ -169,6 +180,9 @@ function MapPage() {
                       <ListItemText primary={`${pos.lat} ${pos.lng}`} />
                       <IconButton color="primary" onClick={() => handleClipboard(pos.lat, pos.lng)}>
                         <ContentCopyIcon />
+                      </IconButton>
+                      <IconButton color="error" onClick={() => removeMarker(pos)}>
+                        <DeleteOutlineIcon />
                       </IconButton>
                     </ListItemButton>
                   </ListItem>
