@@ -14,6 +14,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import MapListItem from '../components/MapListItem';
 import MapFlyTo from '../components/MapFlyTo';
+import MapSearch from '../components/MapSearch';
 
 const drawerWidth = 360;
 
@@ -143,6 +144,7 @@ function MapPage() {
 
               <MapLocation ref={mapLocationRef} zoom={10} />
               <MapFlyTo ref={mapFlyToRef} />
+              <MapSearch />
               <MapEvents />
             </MapContainer>
             <Drawer
