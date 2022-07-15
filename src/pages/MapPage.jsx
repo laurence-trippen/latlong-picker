@@ -5,25 +5,35 @@ import MapLocation from '../components/MapLocation';
 import Header from '../components/Header';
 import { useStore } from '../store/store';
 import MapEvents from '../components/MapEvents';
-import { Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { 
+  Drawer, 
+  IconButton, 
+  Snackbar, 
+  Typography 
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MapListItem from '../components/MapListItem';
+import MapFlyTo from '../components/MapFlyTo';
 
-const drawerWidth = 280;
+const drawerWidth = 360;
 
 function MapPage() {
   // State
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '' });
 
   // Store
   const markerPositions = useStore((state) => state.markerPositions);
   const removeMarker = useStore((state) => state.removeMarker);
   const updateMarker = useStore((state) => state.updateMarker);
+  const selectedMarker = useStore((state) => state.selectedMarker);
+  const setSelectedMarker = useStore((state) => state.setSelectedMarker);
 
   console.log('Pos: ', markerPositions);
 
   // Refs
   const mapLocationRef = useRef();
+  const mapFlyToRef = useRef();
 
   // Events
   function handleMyLocation() {
@@ -34,13 +44,27 @@ function MapPage() {
     setDrawerOpen(state => !state);
   }
 
+  function handleClipboard(lat, long) {
+    // TODO: In Settings Page Option for changing template.
+    navigator.clipboard.writeText(`${lat}, ${long}`);
+
+    setSnackbar({
+      open: true,
+      message: 'Copied to clipboard.',
+    });
+  }
+
+  function handleSnackbarAutoClose() {
+    setSnackbar({ 
+      open: false,
+      message: '',
+    });
+  }
+
   const markerEventHandlers = useMemo(() => ({
     /*
     mousedown(e) {
       console.log('Mouse Down', e.sourceTarget.options.alt);
-    },
-    click(e) {
-      console.log('Click: ', e.target.getLatLng());
     },
     dragstart(e) {
       console.log('Dragstart: ', e);
@@ -58,6 +82,13 @@ function MapPage() {
       console.log('Move: ', e);
     },
     */
+    click(e) {
+      // const latLng = e.target.getLatLng();
+      // console.log('Click: ', latLng);
+
+      const uuid = e.sourceTarget.options.alt;
+      setSelectedMarker(uuid);
+    },
     moveend(e) {
       const uuid = e.sourceTarget.options.alt;
       const { lat, lng } = e.target.getLatLng();
@@ -111,6 +142,7 @@ function MapPage() {
               ))}
 
               <MapLocation ref={mapLocationRef} zoom={10} />
+              <MapFlyTo ref={mapFlyToRef} />
               <MapEvents />
             </MapContainer>
             <Drawer
@@ -130,23 +162,41 @@ function MapPage() {
                 },
               }}
             >
-              {markerPositions.map((pos, id) => (
-                <React.Fragment key={id}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <LocationOnIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={`${pos.lat} ${pos.lng}`} />
-                    </ListItemButton>
-                  </ListItem>
-                  <Divider />
+              {markerPositions.length === 0 
+                ? <Box sx={{ 
+                      display: "flex", 
+                      justifyContent: "center", 
+                      alignItems: "center",
+                      height: "100%"
+                    }}
+                  >
+                    <Typography>No Markers placed</Typography>
+                  </Box>
+                : markerPositions.map((pos) => (
+                <React.Fragment key={pos.uuid}>
+                  <MapListItem 
+                    position={pos}
+                    onCopy={handleClipboard}
+                    onDelete={removeMarker}
+                    onClick={() => mapFlyToRef.current.flyToPosition(pos, 13)}
+                    selected={selectedMarker && selectedMarker === pos.uuid ? true : false}
+                  />
                 </React.Fragment>
               ))}
             </Drawer>
           </Box>
         </Box>
       </Box>
+      <Snackbar 
+        open={snackbar.open}
+        message={snackbar.message}
+        onClose={handleSnackbarAutoClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        autoHideDuration={1000}
+      />
     </>
   );
 }
